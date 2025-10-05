@@ -9,9 +9,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function draw() { x.clearRect(0, 0, w, h); for (let i of snow) x.drawImage(img, i.x, i.y, i.r, i.r * aspect) }
     function update() { for (let i of snow) { let v = fallFunc(i); i.x += v.x; i.y += v.y; if (i.y > h) { i.y = -10; i.x = Math.random() * w } if (i.x < -50) i.x = w + 50; if (i.x > w + 50) i.x = -50 } }
     function loop() { draw(); update(); requestAnimationFrame(loop) }
-    modeChange = function () { img.src = `particles/${currentMode}.png`; setGradient(currentMode); setBtn(currentMode)}
+    modeChange = function () { img.src = `particles/${currentMode}.png`; setGradient(currentMode); setBtn(currentMode) }
     window.onresize = () => { resize(); init() }
     img.onload = () => { aspect = img.height / img.width; resize(); init(); loop() }
+
+    showwindow('home');
 });
 let fallFunc = i => ({ x: 0, y: 1 });
 
@@ -58,7 +60,7 @@ function setGradient(mode) {
             particleLimit = 150;
             fallFunc = i => ({
                 x: 0,
-                y:speed
+                y: speed
             });
             break;
         case "summer":
@@ -86,13 +88,27 @@ function setGradient(mode) {
             imageSize = 20;
             speed = 10;
             particleLimit = 200;
-            
+
             fallFunc = i => ({
                 x: -1,
-                y:speed
+                y: speed
             });
             break;
     }
 }
 
-showwindow('home');
+
+function showwindow(name) {
+    const c = document.getElementById("c")
+    const windows = document.querySelectorAll('.window');
+    windows.forEach(win => {
+        win.style.display = win.id === name ? 'flex' : 'none';
+    });
+    if (name == "home") {
+        c.style.display = "block";
+        setGradient(currentMode);
+    } else {
+        c.style.display = "none";
+        document.body.style.backgroundImage = `linear-gradient(rgb(31, 31, 31), rgb(31 31 31))`;
+    }
+}

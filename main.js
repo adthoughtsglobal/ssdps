@@ -10,63 +10,24 @@ function setBtn(mode) {
         mainbtn.innerHTML = `
                 <span>Select</span>
                 <i class="msr">radio_button_unchecked</i>`;
-
     }
 }
-
-mainbtn.addEventListener("click", () => {
-    if (selectedMode == window.currentMode) {
-        selectedMode = null;
-    } else {
-        selectedMode = window.currentMode;
-    }
-    sendThreshold();
-    setBtn(window.currentMode);
-});
 
 var thresholdValues = {
-    "summer": {
-        solar_low:4.5,
-        samples_solar: 2,
-        samples_moist: 3,
-        temp_req: true,
-        temp_threshold: 30
-    },
-    "rainy": {
-        solar_low:2.5,
-        samples_solar: 5,
-        samples_moist: 2,
-        temp_req: true,
-        temp_threshold: 30
-    },
-    "autumn": {
-        solar_low:4,
-        samples_solar: 3,
-        samples_moist: 4,
-        temp_req: true,
-        temp_threshold: 30
-    },
-    "winter": {
-        solar_low:2,
-        samples_solar: 5,
-        samples_moist: 3,
-        temp_req: true,
-        temp_threshold: 15
-    },
-    "default": {
-        solar_low:2.5,
-        samples_solar: 3,
-        samples_moist: 2,
-        temp_req: true,
-        temp_threshold: 25
-    }
-}
+    summer: { solar_low: 4.5, samples_solar: 2, samples_moist: 3, temp_req: true, temp_threshold: 30 },
+    rainy: { solar_low: 2.5, samples_solar: 5, samples_moist: 2, temp_req: true, temp_threshold: 30 },
+    autumn: { solar_low: 4, samples_solar: 3, samples_moist: 4, temp_req: true, temp_threshold: 30 },
+    winter: { solar_low: 2, samples_solar: 5, samples_moist: 3, temp_req: true, temp_threshold: 15 },
+    default: { solar_low: 2.5, samples_solar: 3, samples_moist: 2, temp_req: true, temp_threshold: 25 }
+};
 
 function getThresholds() {
-    return thresholdValues[(selectedMode) ? selectedMode : "default"];
+    return thresholdValues[selectedMode || "default"];
 }
 
 document.addEventListener('deviceready', () => {
+    console.log("Device ready, bluetoothSerial available:", typeof bluetoothSerial);
+
     const address = document.getElementById("macinput");
     document.getElementById("pairBtn").addEventListener("click", () => {
         bluetoothSerial.connect(address.value,
@@ -74,35 +35,25 @@ document.addEventListener('deviceready', () => {
                 console.log("Connected");
                 bluetoothSerial.subscribe('\n', data => {
                     console.log("Received:", data);
-                    document.getElementById('output').textContent += data;
+                    document.getElementById('logs').textContent += data;
                 });
             },
             err => console.error("Connection failed", err)
         );
     });
-});
 
-
-function sendThreshold() {
-    const t = getThresholds()
-    const msg = `SOLAR:${t.solar_low},MOIST:${t.samples_moist},TEMP_REQ:${t.temp_req ? 1 : 0},TEMP_TH:${t.temp_threshold}\n`
-    bluetoothSerial.write(msg, () => console.log("Sent:", msg), err => console.error("Send failed", err))
-}
-
-function showwindow(name) {
-    const c = document.getElementById("c")
-    const windows = document.querySelectorAll('.window');
-    windows.forEach(win => {
-        win.style.display = win.id === name ? 'flex' : 'none';
+    mainbtn.addEventListener("click", () => {
+        selectedMode = selectedMode === window.currentMode ? null : window.currentMode;
+        sendThreshold();
+        setBtn(window.currentMode);
     });
-    if (name == "home") {
-        c.style.display = "block";
-        setGradient(currentMode);
-    } else {
-        c.style.display = "none";
-        document.body.style.backgroundImage = `linear-gradient(rgb(31, 31, 31), rgb(31 31 31))`;
-    }
-}
 
-console.log = data => document.getElementById("logs").innerText += data + "\n";
-console.error = data => document.getElementById("logs").innerText += data + "\n";
+    function sendThreshold() {
+        const t = getThresholds();
+        const msg = `SOLAR:${t.solar_low},MOIST:${t.samples_moist},TEMP_REQ:${t.temp_req ? 1 : 0},TEMP_TH:${t.temp_threshold}\n`;
+        bluetoothSerial.write(msg,
+            () => console.log("Sent:", msg),
+            err => console.error("Send failed", err)
+        );
+    }
+});
