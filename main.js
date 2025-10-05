@@ -15,40 +15,46 @@ function setBtn(mode) {
 }
 
 mainbtn.addEventListener("click", () => {
-    if (selectedMode == currentMode) {
+    if (selectedMode == window.currentMode) {
         selectedMode = null;
     } else {
-        selectedMode = currentMode;
+        selectedMode = window.currentMode;
     }
-    setBtn(currentMode);
+    sendThreshold();
+    setBtn(window.currentMode);
 });
 
 var thresholdValues = {
     "summer": {
+        solar_low:4.5,
         samples_solar: 2,
         samples_moist: 3,
         temp_req: true,
         temp_threshold: 30
     },
     "rainy": {
+        solar_low:2.5,
         samples_solar: 5,
         samples_moist: 2,
         temp_req: true,
         temp_threshold: 30
     },
     "autumn": {
+        solar_low:4,
         samples_solar: 3,
         samples_moist: 4,
         temp_req: true,
         temp_threshold: 30
     },
     "winter": {
+        solar_low:2,
         samples_solar: 5,
         samples_moist: 3,
         temp_req: true,
         temp_threshold: 15
     },
     "default": {
+        solar_low:2.5,
         samples_solar: 3,
         samples_moist: 2,
         temp_req: true,
@@ -60,23 +66,26 @@ function getThresholds() {
     return thresholdValues[(selectedMode) ? selectedMode : "default"];
 }
 
-function pairDevice() {
-    document.addEventListener('deviceready', () => {
+document.addEventListener('deviceready', () => {
     const address = document.getElementById("macinput");
-
-    bluetoothSerial.connect(address.value , () => {
-        console.log("Connected")
-        bluetoothSerial.subscribe('\n', data => {
-            console.log("Received:", data)
-            document.getElementById('output').textContent += data
-        })
-    }, err => console.error("Connection failed", err))
+    document.getElementById("pairBtn").addEventListener("click", () => {
+        bluetoothSerial.connect(address.value,
+            () => {
+                console.log("Connected");
+                bluetoothSerial.subscribe('\n', data => {
+                    console.log("Received:", data);
+                    document.getElementById('output').textContent += data;
+                });
+            },
+            err => console.error("Connection failed", err)
+        );
+    });
 });
-}
+
 
 function sendThreshold() {
     const t = getThresholds()
-    const msg = `SOLAR:${t.samples_solar},MOIST:${t.samples_moist},TEMP_REQ:${t.temp_req ? 1 : 0},TEMP_TH:${t.temp_threshold}\n`
+    const msg = `SOLAR:${t.solar_low},MOIST:${t.samples_moist},TEMP_REQ:${t.temp_req ? 1 : 0},TEMP_TH:${t.temp_threshold}\n`
     bluetoothSerial.write(msg, () => console.log("Sent:", msg), err => console.error("Send failed", err))
 }
 
@@ -95,4 +104,5 @@ function showwindow(name) {
     }
 }
 
-showwindow('home');
+console.log = data => document.getElementById("logs").innerText += data + "\n";
+console.error = data => document.getElementById("logs").innerText += data + "\n";

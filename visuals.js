@@ -1,4 +1,5 @@
-var currentMode = "winter", modeChange, speed = 0.3, imageSize = 10, particleLimit = 150;
+window.currentMode = "winter";
+let modeChange, speed = 0.3, imageSize = 10, particleLimit = 150;
 document.addEventListener('DOMContentLoaded', () => {
     const c = document.getElementById("c"), x = c.getContext("2d");
     let w, h, snow = [], img = new Image(), aspect = 1;
@@ -93,3 +94,5 @@ function setGradient(mode) {
             break;
     }
 }
+
+showwindow('home');

@@ -16,6 +16,11 @@
     -webkit-font-smoothing: antialiased;
 }
 
+html, body {
+  overflow: hidden;
+  height: 100%;
+}
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -117,6 +122,7 @@ canvas {
     gap: .3em;
     font-size: 1.3em;
     cursor: pointer;
+    z-index: 2;
 }
 
 .selectorcont {
@@ -131,6 +137,7 @@ canvas {
     height: 67vh;
     position: absolute;
     top: 8em;
+    z-index: 1;
 }
 
 .sing_mode {

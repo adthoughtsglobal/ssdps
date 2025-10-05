@@ -41,13 +41,14 @@
         </div>
         <div class="window" id="alert">
             <h1>Alerts</h1>
+            <div id="logs"></div>
         </div>
         <div class="window" id="settings">
             <h1>Settings</h1>
             <p>Connect your smart system</p>
             <div class="inputbox">
                 <input type="text" id="macinput">
-                <button onclick="pairDevice()">Connect</button>
+                <button id="pairBtn">Connect</button>
             </div>
         </div>
         
@@ -65,9 +66,9 @@
                 <i class="msr">tune</i>
             </div>
     </div>
+    <canvas id="c"></canvas>
     <script src="visuals.js" defer></script>
     <script src="main.js"></script>
-    <canvas id="c"></canvas>
 </body>
 
 </html>
