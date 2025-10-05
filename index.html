@@ -39,21 +39,34 @@
                 <i class="msr">radio_button_unchecked</i>
             </div>
         </div>
+        <div class="window" id="alert">
+            <h1>Alerts</h1>
+        </div>
+        <div class="window" id="settings">
+            <h1>Settings</h1>
+            <p>Connect your smart system</p>
+            <div class="inputbox">
+                <input type="text" id="macinput">
+                <button onclick="pairDevice()">Connect</button>
+            </div>
+        </div>
+        
     </div>
     <div class="bottombar">
-        <div class="btn">
+        <div class="btn" onclick="showwindow('alert')">
                 <i class="msr">warning</i>
             </div>
             
-        <div class="btn">
+        <div class="btn" onclick="showwindow('home')">
                 <i class="msr">home</i>
             </div>
             
-        <div class="btn">
+        <div class="btn" onclick="showwindow('settings')">
                 <i class="msr">tune</i>
             </div>
     </div>
-    <script src="script.js"></script>
+    <script src="visuals.js" defer></script>
+    <script src="main.js"></script>
     <canvas id="c"></canvas>
 </body>
 
