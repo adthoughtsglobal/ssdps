@@ -1,0 +1,152 @@
+@font-face {
+    font-family: 'Material Symbols Rounded';
+    font-style: normal;
+    src: url("/MaterialSymbolsRounded.woff2") format('woff2');
+}
+
+.msr {
+    font-family: 'Material Symbols Rounded';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    display: inline-block;
+    white-space: nowrap;
+    direction: ltr;
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    background-image: linear-gradient(180deg, rgb(15 22 44), rgb(16, 163, 255));
+    color: white;
+    height: 100vh;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+.windows {
+    flex: 1;
+    align-items: center;
+    display: flex;
+}
+
+.window {
+    flex: 1;
+    background-color: transparent;
+    padding: 0 0;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: .5em;
+    text-align: center;
+    width: calc(100vw - 0px);
+    overflow: hidden;
+}
+
+canvas {
+    position: absolute;
+    top: 0;
+    z-index: -1;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+
+.topnav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo {
+    width: 100%;
+    max-width: 350px;
+    z-index: -2;
+}
+
+.bottombar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    background: #101010;
+    padding: .5em;
+}
+
+.bottombar .btn {
+    padding: 1em;
+    aspect-ratio: 1/1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.bottombar .btn:hover {
+    background-color: #ffffff0f;
+    border-radius: .5em;
+}
+
+#choosebtn {
+    background-color: #ffffff;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: .5em .7em;
+    border-radius: 2em;
+    gap: .3em;
+    font-size: 1.3em;
+    cursor: pointer;
+}
+
+.selectorcont {
+    display: flex;
+    flex-direction: row;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    transition: .3s ease-out;
+    overflow-x: scroll;
+    width: calc(100vw - 14em);
+    padding: 0 calc(100vw - 7em);
+}
+
+.sing_mode {
+    border-radius: 50%;
+    overflow: hidden;
+    min-width: 60vw;
+    height: auto;
+    aspect-ratio: 1/1;
+    transform: scale(0.6);
+    scroll-snap-align: center;
+    transition: .3s cubic-bezier(0.42, 1.67, 0.21, 0.90);
+}
+
+.sing_mode.center {
+    transform: scale(1);
+}
+
+.sing_mode img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.selectorcont {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.selectorcont::-webkit-scrollbar {
+    display: none;
+}
+
+#modedisp {
+    text-transform: capitalize;
+}
