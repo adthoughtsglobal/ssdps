@@ -33,6 +33,9 @@ document.addEventListener('deviceready', () => {
         bluetoothSerial.connect(address.value,
             () => {
                 console.log("Connected");
+                document.getElementById("connectstatement").innerText = "Smart system connected!"
+                document.getElementById("pairBtn").innerHTML = `<i class="msr">check</i>`
+                document.getElementById("connectform").classList.add("connectedstate");
                 bluetoothSerial.subscribe('\n', data => {
                     console.log("Received:", data);
                     document.getElementById('logs').textContent += data;

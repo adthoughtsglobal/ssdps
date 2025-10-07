@@ -1,16 +1,47 @@
+let lastAvgY = 0;
+function monitorSpeed() {
+    if (!snow.length) return;
+    let sum = 0;
+    for (let i of snow) {
+        let v = fallFunc(i);
+        sum += v.x;
+    }
+    let avg = sum / snow.length;
+    if (avg !== lastAvgY) console.log(`Avg x velocity: ${avg.toFixed(3)}`);
+    lastAvgY = avg;
+    setTimeout(monitorSpeed, 1000);
+}
+
+
 window.currentMode = "winter";
 let modeChange, imageSize = 10, particleLimit = 150, currentWin = "home", snow = [], c, x, w, h, img, aspect = 1;
 function resize() { w = innerWidth; h = innerHeight; c.width = w; c.height = h }
 function init(n = particleLimit) { snow = []; for (let i = 0; i < n; i++) snow.push({ x: Math.random() * w, y: Math.random() * h, r: imageSize * (0.5 + Math.random()), d: Math.random() * 1 + 0.5 }) }
 function draw() { x.clearRect(0, 0, w, h); for (let i of snow) x.drawImage(img, i.x, i.y, i.r, i.r * aspect) }
 function update() { for (let i of snow) { let v = fallFunc(i); i.x += v.x; i.y += v.y; if (i.y > h) { i.y = -10; i.x = Math.random() * w } if (i.x < -50) i.x = w + 50; if (i.x > w + 50) i.x = -50 } }
-function loop() { draw(); update(); requestAnimationFrame(loop) }
-modeChange = function () { setGradient(currentMode); img.src = `particles/${currentMode}.png`; snow = []; init(particleLimit); setBtn(currentMode); }
+let anim;
+function loop() {
+    draw();
+    update();
+    anim = requestAnimationFrame(loop);
+}
+
+modeChange = function () {
+    cancelAnimationFrame(anim);
+    setGradient(currentMode);
+    img.src = `particles/${currentMode}.png`;
+    snow = [];
+    init(particleLimit);
+    setBtn(currentMode);
+    loop();
+}
+
 let fallFunc = i => ({ x: 0, y: 1 });
 document.addEventListener('DOMContentLoaded', () => {
     c = document.getElementById("c"); x = c.getContext("2d"); img = new Image(); img.src = `particles/${currentMode}.png`;
     window.onresize = () => { resize(); init() }
-    img.onload = () => { aspect = img.height / img.width; resize(); init(); loop() }
+    img.onload = () => { aspect = img.height / img.width; resize(); init(); loop(); monitorSpeed(); }
+
     showwindow('home');
 });
 const container = document.querySelector('.selectorcont');
@@ -62,7 +93,7 @@ function setGradient(mode) {
         case "rainy":
             document.body.style.backgroundImage = `linear-gradient(132deg, rgb(51 51 51), rgb(56 98 124))`;
             imageSize = 20; particleLimit = 200;
-            fallFunc = i => ({ x: -1, y: 10 });
+            fallFunc = i => ({ x: 0, y: 10 });
             break;
     }
     init(particleLimit);

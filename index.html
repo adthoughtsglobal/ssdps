@@ -41,12 +41,25 @@
         </div>
         <div class="window" id="alert">
             <h1>Alerts</h1>
-            <div id="logs"></div>
+            <div id="alerts" class="logger">
+                <div class="sing_notif">
+                    <span class="title">
+                <i class="msr">report</i> Issue detected with solar cleaner</span>
+                    <p>Pump may have a malfunction.</p>
+                </div>
+            </div>
+            
+            <h1>Logs</h1>
+            <div id="logs" class="logger">
+                <div class="sing_notif">
+                    Smart system was connected!
+                </div>
+            </div>
         </div>
         <div class="window" id="settings">
             <h1>Settings</h1>
             <div class="setting" id="connectform">
-                <p>Connect your smart system</p>
+                <p id="connectstatement">Connect your smart system</p>
                 <div class="inputbox">
                     <input type="text" id="macinput" placeholder="Enter the MAC address...">
                     <button id="pairBtn">
