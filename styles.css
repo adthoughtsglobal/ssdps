@@ -1,7 +1,7 @@
 @font-face {
     font-family: 'Material Symbols Rounded';
     font-style: normal;
-    src: url("MaterialSymbolsRounded.woff2") format('woff2');
+    src: url("MaterialIcons-Regular.ttf") format('woff2');
 }
 
 @font-face {
@@ -54,6 +54,12 @@ body {
     overflow: hidden;
 }
 
+@keyframes windpop {
+    0% {
+        transform: translateY(1em);
+    }
+}
+
 .window {
     flex: 1;
     background-color: transparent;
@@ -68,6 +74,7 @@ body {
     overflow: hidden;
     padding-bottom: 3em;
     width: calc(100vw - 1em);
+    animation: windpop .3s cubic-bezier(0.42, 1.67, 0.21, 0.90);
 }
 
 .window#home {
@@ -116,6 +123,7 @@ canvas {
     justify-content: center;
     align-items: center;
     cursor: pointer;
+    position: relative;
 }
 
 .bottombar .btn:hover {
@@ -236,6 +244,28 @@ canvas {
     outline: 0;
 }
 
+
+.setting>button {
+    border: none;
+    font: inherit;
+    color: inherit;
+    outline: 0;
+    background-color: #6a1d1d;
+    padding: .5em 1em;
+    display: flex;
+    cursor: pointer;
+    border-radius: 2em;
+    align-items: center;
+    justify-content: center;
+    gap: .3em;
+    width: fit-content;
+}
+
+.setting.horiz {
+    flex-direction: row;
+    justify-content: space-between;
+}
+
 .setting>.inputbox>button {
     background-color: #1d456a;
     padding: .5em;
@@ -286,7 +316,7 @@ div.logger {
     gap: .5em;
 }
 
-.sing_notif > .title {
+.sing_notif>.title {
     color: #a6a6a6;
     font-size: .9em;
     display: flex;
@@ -294,11 +324,37 @@ div.logger {
     gap: .3em;
 }
 
-.sing_notif > .title > .msr{
+
+.sing_notif>.title>b {
+    color: white;
+}
+
+.sing_notif>.title>.icn {
     color: red;
     font-size: 20px;
 }
 
-.sing_notif > p{
+
+.sing_notif>.title>.issue {
+    flex: 1;
+}
+
+.sing_notif>p {
     margin: 0;
+}
+
+.badge {
+    position: absolute;
+    background: #ff3e3e;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    font-size: 14px;
+    top: 3px;
+    right: 0px;
+    border-radius: 50%;
+    font-family: monospace;
 }

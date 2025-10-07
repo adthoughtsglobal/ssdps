@@ -37,8 +37,11 @@ document.addEventListener('deviceready', () => {
                 document.getElementById("pairBtn").innerHTML = `<i class="msr">check</i>`
                 document.getElementById("connectform").classList.add("connectedstate");
                 bluetoothSerial.subscribe('\n', data => {
-                    console.log("Received:", data);
-                    document.getElementById('logs').textContent += data;
+                    if (data == "solarpumpMalfucnt") {
+                        notify(`solar pump`, " 🔵 Solar pump may have a malfunction.")
+                    } else if (data == "soilpumpMalfucnt") {
+                        notify(`soil pump`, " 🟢 Soil pump may have a malfunction. ")
+                    }
                 });
             },
             err => console.error("Connection failed", err)
@@ -49,6 +52,7 @@ document.addEventListener('deviceready', () => {
         selectedMode = selectedMode === window.currentMode ? null : window.currentMode;
         sendThreshold();
         setBtn(window.currentMode);
+        logit("Mode changed to " + window.currentMode)
     });
 
     function sendThreshold() {
@@ -60,3 +64,63 @@ document.addEventListener('deviceready', () => {
         );
     }
 });
+
+function notify(withwhat, desc) {
+    var alerts = document.getElementById("alerts");
+
+    var notif = document.createElement("div");
+    notif.classList.add("sing_notif", "sing_alert");
+
+    var title = document.createElement("span");
+    title.className = "title";
+
+    var icon = document.createElement("i");
+    icon.className = "msr icn";
+    icon.textContent = "report";
+
+    var issue = document.createElement("div");
+    issue.className = "issue";
+    issue.textContent = `Issue detected with ${withwhat}`;
+
+    var closeBtn = document.createElement("div");
+    closeBtn.className = "msr";
+    closeBtn.textContent = "close";
+    closeBtn.onclick = () => {
+        notif.remove();
+        updateAlertCounter();
+    }
+
+    title.appendChild(icon);
+    title.appendChild(issue);
+    title.appendChild(closeBtn);
+
+    var descP = document.createElement("p");
+    descP.textContent = desc;
+
+    notif.appendChild(title);
+    notif.appendChild(descP);
+
+    alerts.appendChild(notif);
+
+    alerts.scrollTop = alerts.scrollHeight;
+
+    updateAlertCounter();
+}
+
+function logit(text) {
+    document.getElementById("logs").innerHTML += `<div class="sing_notif">
+                    ${text}
+                </div>`
+}
+
+function updateAlertCounter() {
+    let alertslen = [...document.getElementsByClassName("sing_alert")].length;
+    document.getElementById("alertsBadge").innerText = alertslen;
+    if (alertslen == 0) {
+    document.getElementById("alertsBadge").style.display = "none";
+    } else {
+    document.getElementById("alertsBadge").style.display = "flex";
+    }
+}
+
+updateAlertCounter();

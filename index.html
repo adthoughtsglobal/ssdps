@@ -42,18 +42,10 @@
         <div class="window" id="alert">
             <h1>Alerts</h1>
             <div id="alerts" class="logger">
-                <div class="sing_notif">
-                    <span class="title">
-                <i class="msr">report</i> Issue detected with solar cleaner</span>
-                    <p>Pump may have a malfunction.</p>
-                </div>
             </div>
-            
+
             <h1>Logs</h1>
             <div id="logs" class="logger">
-                <div class="sing_notif">
-                    Smart system was connected!
-                </div>
             </div>
         </div>
         <div class="window" id="settings">
@@ -66,13 +58,18 @@
                         <i class="msr">arrow_forward_ios</i></button>
                 </div>
             </div>
-            
+            <div class="setting horiz">
+                <p>Clear all logs</p>
+                <button onclick="document.getElementById('logs').innerHTML = ''">Clear<i class="msr">close</i></button>
+            </div>
+
         </div>
 
     </div>
     <div class="bottombar">
         <div class="btn" onclick="showwindow('alert')">
             <i class="msr">warning</i>
+            <div class="badge" id="alertsBadge">1</div>
         </div>
 
         <div class="btn" onclick="showwindow('home')">
