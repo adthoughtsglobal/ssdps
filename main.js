@@ -24,48 +24,91 @@ var thresholdValues = {
 function getThresholds() {
     return thresholdValues[selectedMode || "default"];
 }
-
 document.addEventListener('deviceready', () => {
     console.log("Device ready, bluetoothSerial available:", typeof bluetoothSerial);
 
     const address = document.getElementById("macinput");
-    document.getElementById("pairBtn").addEventListener("click", () => {
-        bluetoothSerial.connect(address.value,
-            () => {
-                console.log("Connected");
-                document.getElementById("connectstatement").innerText = "Smart system connected!"
-                document.getElementById("pairBtn").innerHTML = `<i class="msr">check</i>`
-                document.getElementById("connectform").classList.add("connectedstate");
-                bluetoothSerial.subscribe('\n', data => {
-                    if (data == "solarpumpMalfucnt") {
-                        notify(`solar pump`, " 🔵 Solar pump may have a malfunction.")
-                    } else if (data == "soilpumpMalfucnt") {
-                        notify(`soil pump`, " 🟢 Soil pump may have a malfunction. ")
-                    }
-                });
-            },
-            err => console.error("Connection failed", err)
-        );
+    const pairBtn = document.getElementById("pairBtn");
+
+    // Request runtime permissions before connecting
+    const perms = [
+        cordova.plugins.permissions.BLUETOOTH_CONNECT,
+        cordova.plugins.permissions.BLUETOOTH_SCAN,
+        cordova.plugins.permissions.ACCESS_FINE_LOCATION
+    ];
+
+    cordova.plugins.permissions.hasPermission(perms, status => {
+        if (!status.hasPermission) {
+            cordova.plugins.permissions.requestPermissions(perms,
+                () => console.log("Bluetooth permissions granted"),
+                err => console.error("Bluetooth permissions denied", err)
+            );
+        } else {
+            console.log("Bluetooth permissions already granted");
+        }
+    }, err => console.error("Permission check failed", err));
+
+    pairBtn.addEventListener("click", () => {
+        if (!address.value || address.value.length < 5) { // crude MAC validation
+            alert("Please enter a valid MAC address");
+            console.warn("Invalid MAC address:", address.value);
+            return;
+        }
+
+        console.log("Attempting to connect to:", address.value);
+
+        try {
+            bluetoothSerial.connect(address.value,
+                () => {
+                    console.log("✅ Connected to", address.value);
+                    bluetoothSerial.subscribe('\n', data => {
+                        console.log("[BT DATA]", data);
+                        data = data.trim();
+
+                        if (data == "solarpumpMalfucnt") {
+                            notify("solar pump", "🔵 Solar pump may have a malfunction.");
+                        } else if (data == "soilpumpMalfucnt") {
+                            notify("soil pump", "🟢 Soil pump may have a malfunction.");
+                        } else if (data == "pumpB_longRun") {
+                            alert("SOALREAREARHAHHHHHH")
+                            notify("solar pump", "🔵 Solar pump running for more than 10 seconds.");
+                        } else if (data == "pumpA_longRun") {
+                            alert("SOILLAHHAHHHAHHHHHH")
+                            notify("soil pump", "🟢 Soil pump running for more than 15 seconds.");
+                        }
+                    });
+                },
+                err => {
+                    console.error("❌ Connection failed:", err);
+                    alert("Connection failed. See console for details.");
+                }
+            );
+        } catch (e) {
+            console.error("Exception during connect:", e);
+            alert("Error connecting: " + e.message);
+        }
     });
 
     mainbtn.addEventListener("click", () => {
         selectedMode = selectedMode === window.currentMode ? null : window.currentMode;
         sendThreshold();
         setBtn(window.currentMode);
-        logit("Mode changed to " + window.currentMode)
+        logit("Mode changed to " + window.currentMode);
     });
 
     function sendThreshold() {
         const t = getThresholds();
         const msg = `SOLAR:${t.solar_low},MOIST:${t.samples_moist},TEMP_REQ:${t.temp_req ? 1 : 0},TEMP_TH:${t.temp_threshold}\n`;
         bluetoothSerial.write(msg,
-            () => console.log("Sent:", msg),
-            err => console.error("Send failed", err)
+            () => console.log("✅ Sent:", msg),
+            err => console.error("❌ Send failed:", err)
         );
     }
 });
 
+
 function notify(withwhat, desc) {
+    alert(desc);
     var alerts = document.getElementById("alerts");
 
     var notif = document.createElement("div");
@@ -117,9 +160,9 @@ function updateAlertCounter() {
     let alertslen = [...document.getElementsByClassName("sing_alert")].length;
     document.getElementById("alertsBadge").innerText = alertslen;
     if (alertslen == 0) {
-    document.getElementById("alertsBadge").style.display = "none";
+        document.getElementById("alertsBadge").style.display = "none";
     } else {
-    document.getElementById("alertsBadge").style.display = "flex";
+        document.getElementById("alertsBadge").style.display = "flex";
     }
 }
 
